@@ -9,7 +9,7 @@
 %\documentclass[withtimes]{easychair}
 %\documentclass[a4paper]{easychair}
 %\documentclass[letterpaper]{easychair}
-
+\usepackage{wrapfig}
 \usepackage{doc}
 \usepackage{fullpage}
 
@@ -146,7 +146,13 @@ Hierarchy Builder. The whole library finally compiled on April 20.
 The porting consisted in declaring all the interfaces and their instances
 using the new commands, \emph{without changing proofs} in any substantial way.
 At the time of writing the patch~\footnote{\url{https://github.com/math-comp/math-comp/pull/733}}
-amounts to about 5K lines being edited, and 5K lines being simply \emph{removed}.
+amounts to about 5K lines being edited, and 5K lines being simply \emph{removed}.\\
+\begin{wrapfigure}[12]{r}{.45\textwidth}
+  \vspace{-3.5em}
+	\includegraphics[width=.45\textwidth]{order.pdf}
+  \caption{Hierarchy in order.v}
+	\label{fig:order}
+\end{wrapfigure}
 
 \section{Report}
 
@@ -158,8 +164,8 @@ proficiently. Wiki page TODO.
 MC files have an header gathering the interface the user is supposed to used.
 They had to be updated, still in process. Thanks to the fact that HB has an
 internal representation of the hierarchy we could provide a command to
-generate a dot presentation of it, see appendix for the excerpt for the
-algebra component/order component. In addition to that about command to get HB
+generate a dot presentation of it, see~\ref{fig:order} for the excerpt for the
+order component. In addition to that about command to get HB
 specific info.
 
 \paragraph{Performance}
@@ -167,7 +173,7 @@ specific info.
 TT lacks a notion af abstraction barrier. The library is already built
 as if one was there, you define a concept, prove some properties, and never
 unfold that concept. Still this is just a common practice with no correspondence
-in TT nor in Coq vernac. MC always sufferd from per issues, concepts pile up,
+in TT nor in Coq vernacular. MC always suffered from per issues, concepts pile up,
 and the conversion checking (term comparison) algorithm can get lost. The
 library employed various locking mechanisms to mitigate the problem. HB.lock
 provides one a little cost, example.
@@ -210,5 +216,7 @@ Given MC is widely used in the community, we plan to
 \bibliography{bib}
 
 %------------------------------------------------------------------------------
+
+
 \end{document}
 
