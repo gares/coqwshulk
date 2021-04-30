@@ -13,7 +13,8 @@
 \usepackage{doc}
 \usepackage{fullpage}
 \usepackage{fancyvrb}
-
+\usepackage{amsmath}
+\usepackage{amssymb}
 
 % use this if you have a long article and want to create an index
 % \usepackage{makeidx}
@@ -70,13 +71,13 @@
 
 % Institutes for affiliations are also joined by \and,
 \institute{
-  Inria, Universit\'e c\^ote d'Azur
+  Universit\'e C\^ote d'Azur, Inria, France
 \and
-   Tsukuba University
+   Tsukuba University, Japan
 \and
-   AIST
+   AIST, Japan
 \and
-   Inria, CMAP, CNRS, Ecole Polytechnique, Institut Polytechnique de Paris
+   Inria, CMAP, CNRS, Ecole Polytechnique, Institut Polytechnique de Paris, France
  }
 
 %  \authorrunning{} has to be set for the shorter version of the authors' names;
@@ -115,16 +116,16 @@
 \section{Context}
 \label{sect:introduction}
 
-This abstract reports on the porting of the Mathematical Components library
+We report on the porting of the Mathematical Components library
 to the Hierarchy Builder~\cite{cohen_et_al:LIPIcs:2020:12356} tool.
 
 Mathematical Components is an extensive and coherent repository of formalized
 mathematical theories. At the time of writing about 40 opam packages depend
 on some components from this library and these packages are not exclusively
-focusing on mathematics (eg Iris, QuickChick, Disel \ldots). 
-The library is made of 91 files for a total 124 thousands lines of code.
+focusing on mathematics (eg Iris, QuickChick, Disel \ldots).
+The library is made of 91 files for a total 124 000 lines of code.
 
-The key to keep the library growing in a rational way is that it revolves
+A major key to keep the library growing in a rational way is that it revolves
 around a hierarchy of interfaces which organizes operations and properties.
 Interfaces come with theories which apply, automatically, to all the objects
 which are registered as validating the interface. These interfaces are
@@ -140,7 +141,7 @@ packed classed to work. The user just inputs record declarations,
 standing for the interfaces, and proofs, for the instances. She is relieved from
 most of the gibberish of modules, sections, coercions, canonical
 structures, implicit arguments, phantom abbreviations, \ldots
- 
+
 In the week from the 6th to the 9th of April 2021 the authors of this abstract
 gathered (virtually) for a sprint on porting the Mathematical Components to
 Hierarchy Builder. The whole library finally compiled on April 20.
@@ -172,7 +173,7 @@ order component, which lost 1300 lines in the process. In addition to that about
 specific info.
 
 \begin{wrapfigure}[12]{r}{.40\textwidth}
-\vspace{-5em}
+\vspace{-1em}
 \begin{Verbatim}[fontsize=\footnotesize]
  HB: Order.Total.type is a structure
      (from "./ssreflect/order.v", line 1588)
@@ -189,6 +190,7 @@ specific info.
  HB: Order.Total is inherited by:
      - Order.FinTotal
 \end{Verbatim}
+\vspace{-1.5em}
 \caption{\small HB.about Total.}
 \label{fig:orderabout}
 \end{wrapfigure}
@@ -209,29 +211,48 @@ the changes needed (unlocking) were minimal.
 \paragraph{Instances}
 
 HB provides a built in concept of factory, a virtual interface which is
-compiled to real interfaces automatically. Not enough, since sometimes the
-interface is really just a lemma, eg transporting an axiom set via an equation
-or an isomorphism. Foo.copy.
+compiled to real interfaces automatically. They are mandatory to get backward
+compatibility when a library evolves. However, sometimes, defining a factory is
+slightly too heavy and we prefer to rely on either one or a combination of the
+following techniques: either we use lemma or definition which produces a
+factory from some input, or we declare an alias (identity definition) which
+carries additional instances, (e.g. \verb+can_type+, \verb+sub_type+, ...) in
+combination with \verb+Structure.copy T alias+ which copies all the structure
+of an alias \verb+alias+ on \verb+T+.
 
 \paragraph{Limitations}
 
-currently ssrnum has a problem, Cyril explain.
+The only part of the hierarchy we did not manage to port so far is the
+interdependency between normed $\mathbb{Z}$-modules and numeric domains.
+Indeed, a normed $\mathbb{Z}$-module is a $\mathbb{Z}$-module on $R$
+equipped with a norm with values in a numeric domain $R$,
+while a numeric domain is a $\mathbb{Z}$-module on itself, and this apparent
+cyclicity which was encodable by hand is not supported by HB.
+Since these structures are only really needed in MC analysis,
+we managed to port MC by oversimplifying these structures.
+We plan to extend HB to support this kind of self-reference
+and enable the porting of MC analysis.
 
 \paragraph{Porting activity}
 
-side by side in UIs, Laurent.
+One of the challenges of the porting activity was to contribute simultaneously
+to several files within MC and HB with minimal bureaucracy, and making sure
+everyone uses the same versions of every single dependency.
 
-nix (other talk?)
+Part of this objective was achieved through a rational use of several
+communication tools: a Zulip chat and a video meeting for each
+collaborative dev sessions. Help from others was obtained very fast.
+
+The other part was achieved through a nix shell which was kept updated
+at all times to reflect the current reference configuration.
+Anyone using this nix-shell had the guarantee to be in sync with our CI
+and hence with others.
 
 \section{Plan for Mathematical Components version 2.0}
 
-Given MC is widely used in the community, we plan to
-
-\begin{itemize}
-\item 1.x releases will continue for a while and will
-\item 2.x when ready, 1.x still there in maintenance mode
-\item dev focus on 2.x, 1.x for legacy
-\end{itemize}
+Given MC is widely used in the community, we plan to continue releasing 1.x
+releases for a while. When the first 2.x release is ready, we plan to will
+keep maintaining 1.x minimally (anything that can be backported without changing the hierarchy).
 
 \label{sect:bib}
 \bibliographystyle{plain}
