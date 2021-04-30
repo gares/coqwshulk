@@ -43,7 +43,7 @@
 % into the list defined using \institute
 %
 \author{
-  Reynald Affeldt
+  Reynald Affeldt\inst{3}
   \and
   Xavier Allamigeon
   \and
@@ -73,6 +73,8 @@
 \and
    Tsukuba University\\
    \email{xx@yy}\\
+\and
+	AIST
  }
 
 %  \authorrunning{} has to be set for the shorter version of the authors' names;
@@ -120,9 +122,9 @@ on some components from this library and these packages are not exclusively
 focusing on mathematics (eg Iris, QuickChick, Disel \ldots). 
 The library is made of 91 files for a total 124 thousands lines of code.
 
-The key to keep the library growing in an rational way is that it revolves
+The key to keep the library growing in a rational way is that it revolves
 around a hierarchy of interfaces which organizes operations and properties.
-Interfaces comes with theories which apply, automatically, to all the objects
+Interfaces come with theories which apply, automatically, to all the objects
 which are registered as validating the interface. These interfaces are
 implemented following the packed classes discipline which works well in practice
 but has never been easy to master. Pull Requests extending or modifying the
