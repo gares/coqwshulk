@@ -117,7 +117,7 @@ Mathematical Components is an extensive and coherent repository of formalized
 mathematical theories. At the time of writing about 40 opam packages depend
 on some components from this library and these packages are not exclusively
 focusing on mathematics (eg Iris, QuickChick, Disel \ldots). 
-The library is made of 91 files for a total 124 thousands lines od code.
+The library is made of 91 files for a total 124 thousands lines of code.
 
 The key to keep the library growing in an rational way is that it revolves
 around a hierarchy of interfaces which organizes operations and properties.
@@ -126,19 +126,22 @@ which are registered as validating the interface. These interfaces are
 implemented following the packed classes discipline which works well in practice
 but has never been easy to master. Pull Requests extending or modifying the
 hierarchy turned out to be problematic, hard to review and integrate. Only
-a few were merged, others are put on hold waiting for the library begin ported
-to Hierarchy Builder.
+a few were merged, the others are put on hold waiting for the library begin
+ported to Hierarchy Builder.
 
 Hierarchy Builder is a set of commands implemented in Coq-Elpi which take
-care of automatically synthesizing all the error boilerplate required for
-packed classed to work. ...
+care of automatically synthesizing all the error prone boilerplate required for
+packed classed to work. The user just inputs record declarations,
+standing for the interfaces, and proofs, for the instances. She is relieved from
+most of the technical gibberish of modules, sections, coercions, canonical
+structures, implicit arguments, phantom abbreviations, \ldots
  
 In the week from the 6th to the 9th of April 2021 the authors of this abstract
 gathered (virtually) for a sprint on porting the Mathematical Components to
-Hierarcy Builder. The whole library finally compiled on April 20.
+Hierarchy Builder. The whole library finally compiled on April 20.
 
 The porting consisted in declaring all the interfaces and their instances
-using the new command, without changing proofs in any substantial way.
+using the new command, \emph{without changing proofs} in any substantial way.
 At the time of writing the patch~\footnote{\url{https://github.com/math-comp/math-comp/pull/733}}
 amounts to about 5K lines being edited, and 5K lines being simply \emph{removed}.
 
