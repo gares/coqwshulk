@@ -1,0 +1,170 @@
+% easychair.tex,v 3.5 2017/03/15
+
+\documentclass{easychair}
+%\documentclass[EPiC]{easychair}
+%\documentclass[EPiCempty]{easychair}
+%\documentclass[debug]{easychair}
+%\documentclass[verbose]{easychair}
+%\documentclass[notimes]{easychair}
+%\documentclass[withtimes]{easychair}
+%\documentclass[a4paper]{easychair}
+%\documentclass[letterpaper]{easychair}
+
+\usepackage{doc}
+
+% use this if you have a long article and want to create an index
+% \usepackage{makeidx}
+
+% In order to save space or manage large tables or figures in a
+% landcape-like text, you can use the rotating and pdflscape
+% packages. Uncomment the desired from the below.
+%
+% \usepackage{rotating}
+% \usepackage{pdflscape}
+
+% Some of our commands for this guide.
+%
+\newcommand{\easychair}{\textsf{easychair}}
+\newcommand{\miktex}{MiK{\TeX}}
+\newcommand{\texniccenter}{{\TeX}nicCenter}
+\newcommand{\makefile}{\texttt{Makefile}}
+\newcommand{\latexeditor}{LEd}
+
+%\makeindex
+
+%% Front Matter
+%%
+% Regular title as in the article class.
+%
+\title{Porting the Mathematical Components library to Hierarchy Builder}
+
+% Authors are joined by \and. Their affiliations are given by \inst, which indexes
+% into the list defined using \institute
+%
+\author{
+  Reynald Affeldt
+  \and
+  Xavier Allamigeon
+  \and
+  Yves Bertot\inst{1}
+  \and
+  Quentin Canu
+  \and
+  Cyril Cohen\inst{1}
+  \and
+  Marie Kerjean
+  \and
+  Pierre Roux
+  \and
+  Kazuhiko Sakaguchi\inst{2}
+  \and
+  Enrico Tassi\inst{1}
+  \and
+  Laurent Thery\inst{1}
+  \and
+  Anton Trunov
+}
+
+% Institutes for affiliations are also joined by \and,
+\institute{
+  Inria\\
+  \email{name.surname@inria.fr}\\
+\and
+   Tsukuba University\\
+   \email{xx@yy}\\
+ }
+
+%  \authorrunning{} has to be set for the shorter version of the authors' names;
+% otherwise a warning will be rendered in the running heads. When processed by
+% EasyChair, this command is mandatory: a document without \authorrunning
+% will be rejected by EasyChair
+
+\authorrunning{The Mathematical Components developers}
+
+% \titlerunning{} has to be set to either the main title or its shorter
+% version for the running heads. When processed by
+% EasyChair, this command is mandatory: a document without \titlerunning
+% will be rejected by EasyChair
+\titlerunning{Mathematical Components and Hierarchy Builder}
+
+\begin{document}
+
+\maketitle
+
+% The table of contents below is added for your convenience. Please do not use
+% the table of contents if you are preparing your paper for publication in the
+% EPiC Series or Kalpa Publications series
+
+%\setcounter{tocdepth}{2}
+%{\small
+%\tableofcontents}
+
+%\section{To mention}
+%
+%Processing in EasyChair - number of pages.
+%
+%Examples of how EasyChair processes papers. Caveats (replacement of EC
+%class, errors).
+
+%------------------------------------------------------------------------------
+\section{Context}
+\label{sect:introduction}
+
+This abstract reports on the porting of the Mathematical Components library
+to the Hierarchy Builder~\cite{cohen_et_al:LIPIcs:2020:12356} tool.
+
+Mathematical Components is an extensive and coherent repository of formalized
+mathematical theories. At the time of writing about 40 opam packages depend
+on some components from this library and these packages are not exclusively
+focusing on mathematics (eg Iris, QuickChick, Disel \ldots). 
+The library is made of 91 files for a total 124 thousands lines od code.
+
+The key to keep the library growing in an rational way is that it revolves
+around a hierarchy of interfaces which organizes operations and properties.
+Interfaces comes with theories which apply, automatically, to all the objects
+which are registered as validating the interface. These interfaces are
+implemented following the packed classes discipline which works well in practice
+but has never been easy to master. Pull Requests extending or modifying the
+hierarchy turned out to be problematic, hard to review and integrate. Only
+a few were merged, others are put on hold waiting for the library begin ported
+to Hierarchy Builder.
+
+Hierarchy Builder is a set of commands implemented in Coq-Elpi which take
+care of automatically synthesizing all the error boilerplate required for
+packed classed to work. ...
+ 
+In the week from the 6th to the 9th of April 2021 the authors of this abstract
+gathered (virtually) for a sprint on porting the Mathematical Components to
+Hierarcy Builder. The whole library finally compiled on April 20.
+
+The porting consisted in declaring all the interfaces and their instances
+using the new command, without changing proofs in any substantial way.
+At the time of writing the patch~\footnote{\url{https://github.com/math-comp/math-comp/pull/733}}
+amounts to about 5K lines being edited, and 5K lines being simply \emph{removed}.
+
+\section{Report}
+
+performance of term comparison and locking
+
+not all design patterns are supported, new ones invented
+
+not all structures can be dealt with, a part of ssrnum is currently half disabled
+
+\section{Plan for Mathematical Components version 2.0}
+
+1.x releases will continue for a while and will
+
+2.x when ready, 1.x still there in maintenance mode
+
+dev focus on 2.x, 1.x for legacy
+
+\label{sect:bib}
+\bibliographystyle{plain}
+%\bibliographystyle{alpha}
+%\bibliographystyle{unsrt}
+%\bibliographystyle{abbrv}
+\bibliography{bib}
+
+%------------------------------------------------------------------------------
+\end{document}
+
