@@ -12,6 +12,8 @@
 \usepackage{wrapfig}
 \usepackage{doc}
 \usepackage{fullpage}
+\usepackage{fancyvrb}
+
 
 % use this if you have a long article and want to create an index
 % \usepackage{makeidx}
@@ -143,11 +145,12 @@ In the week from the 6th to the 9th of April 2021 the authors of this abstract
 gathered (virtually) for a sprint on porting the Mathematical Components to
 Hierarchy Builder. The whole library finally compiled on April 20.
 
-\begin{wrapfigure}[16]{r}{.45\textwidth}
-  \vspace{-3.2em}
-	\includegraphics[width=.45\textwidth]{order.pdf}
+\begin{wrapfigure}[16]{r}{.40\textwidth}
+  \vspace{-2em}
+	\includegraphics[width=.40\textwidth]{order.pdf}
   \caption{\small Hierarchy in order.v}
 	\label{fig:order}
+  \vspace{-3em}
 \end{wrapfigure}
 The porting consisted in declaring all the interfaces and their instances
 using the new commands, \emph{without changing proofs} in any substantial way.
@@ -167,6 +170,28 @@ internal representation of the hierarchy we could provide a command to
 generate a dot presentation of it, see~\ref{fig:order} for the excerpt for the
 order component, which lost 1300 lines in the process. In addition to that about command to get HB
 specific info.
+
+\begin{wrapfigure}[12]{r}{.40\textwidth}
+\vspace{-5em}
+\begin{Verbatim}[fontsize=\footnotesize]
+ HB: Order.Total.type is a structure
+     (from "./ssreflect/order.v", line 1588)
+ HB: Order.Total.type characterizing operations
+     and axioms are:
+     - le_total
+ ...
+ HB: Order.Total inherits from:
+     - eqtype.Equality
+     - choice.Choice
+     - Order.POrder
+     - Order.Lattice
+     - Order.DistrLattice
+ HB: Order.Total is inherited by:
+     - Order.FinTotal
+\end{Verbatim}
+\caption{\small HB.about Total.}
+\label{fig:orderabout}
+\end{wrapfigure}
 
 \paragraph{Performance}
 
