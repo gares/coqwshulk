@@ -144,20 +144,57 @@ gathered (virtually) for a sprint on porting the Mathematical Components to
 Hierarchy Builder. The whole library finally compiled on April 20.
 
 The porting consisted in declaring all the interfaces and their instances
-using the new command, \emph{without changing proofs} in any substantial way.
+using the new commands, \emph{without changing proofs} in any substantial way.
 At the time of writing the patch~\footnote{\url{https://github.com/math-comp/math-comp/pull/733}}
 amounts to about 5K lines being edited, and 5K lines being simply \emph{removed}.
 
 \section{Report}
 
-\begin{itemize}
-\item performance of term comparison and abstraction barriers, locking
-\item not all design patterns are supported, new ones invented
-\item not all structures can be dealt with, a part of ssrnum is currently half disabled
-\item documentation experiments (graph, docstring, generation)
-\end{itemize}
+\paragraph{Documentation}
+
+Hb is a young tool, some doc was missing, in particular how to use it
+proficiently. Wiki page TODO.
+
+MC files have an header gathering the interface the user is supposed to used.
+They had to be updated, still in process. Thanks to the fact that HB has an
+internal representation of the hierarchy we could provide a command to
+generate a dot presentation of it, see appendix for the excerpt for the
+algebra component/order component. In addition to that about command to get HB
+specific info.
+
+\paragraph{Performance}
+
+TT lacks a notion af abstraction barrier. The library is already built
+as if one was there, you define a concept, prove some properties, and never
+unfold that concept. Still this is just a common practice with no correspondence
+in TT nor in Coq vernac. MC always sufferd from per issues, concepts pile up,
+and the conversion checking (term comparison) algorithm can get lost. The
+library employed various locking mechanisms to mitigate the problem. HB.lock
+provides one a little cost, example.
+Since HB uses a more regular, but less ``efficient'' representation of classes
+we had to lock a bit more. Given the library is already built with this in mind,
+the changes needed (unlocking) were minimal.
+
+\paragraph{Instances}
+
+HB provides a built in concept of factory, a virtual interface which is
+compiled to real interfaces automatically. Not enough, since sometimes the
+interface is really just a lemma, eg transporting an axiom set via an equation
+or an isomorphism. Foo.copy.
+
+\paragraph{Limitations}
+
+currently ssrnum has a problem, Cyril explain.
+
+\paragraph{Porting activity}
+
+side by side in UIs, Laurent.
+
+nix (other talk?)
 
 \section{Plan for Mathematical Components version 2.0}
+
+Given MC is widely used in the community, we plan to
 
 \begin{itemize}
 \item 1.x releases will continue for a while and will
