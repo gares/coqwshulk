@@ -128,27 +128,27 @@ on some components from this library and these packages are not exclusively
 focusing on mathematics (e.g., Iris, QuickChick, Disel, \ldots).
 The library is made of 91 files for a total 124 000 lines of code.
 
-A major key to keep the library growing in a rational way is that it revolves
+The key to keep the library growing in a rational way is that it revolves
 around a hierarchy of interfaces which organizes operations and properties.
 Interfaces come with theories which apply, automatically, to all the objects
 which are registered as validating the interface. These interfaces are
 implemented following the packed classes discipline which works well in practice
-but has never been easy to master. Pull Requests extending or modifying the
-hierarchy turned out to be problematic, hard to review and integrate. Only
-a few were merged, the others are put on hold waiting for the library begin
+but has never been easy to master. Pull Requests extending or \emph{modifying the
+hierarchy turned out to be problematic}, hard to review and integrate. Only
+a few were merged, the others were put on hold waiting for the library begin
 ported to \HB{}.
 
 \begin{wrapfigure}[16]{r}{.40\textwidth}
-  \vspace{-2em}
+  \vspace{-1em}
 	\includegraphics[width=.40\textwidth]{order.pdf}
   \caption{\small Hierarchy in {\tt order.v}}
 	\label{fig:order}
-  \vspace{-3em}
+  
 \end{wrapfigure}
 \
-\HB{} is a set of commands implemented in Coq-Elpi which take
+\HB{} is a set of high level vernacular commands implemented in Coq-Elpi. It takes
 care of automatically synthesizing all the error prone boilerplate required for
-packed classed to work. The user just inputs record declarations,
+packed classed to work. Users just inputs record declarations,
 standing for the interfaces, and proofs, for the instances.
 They are relieved from
 most of the gibberish of modules, sections, coercions, canonical
@@ -157,17 +157,16 @@ structures, implicit arguments, phantom abbreviations, \ldots
 In the week from the 6th to the 9th of April 2021 the authors of this abstract
 gathered (virtually) for a sprint on porting the \MC{} to
 \HB{}. The whole library finally compiled on April 20.
-
 The porting consisted in declaring all the interfaces and their instances
 using the new commands, \emph{without changing proofs} in any substantial way.
 At the time of writing the patch~\footnote{\url{https://github.com/math-comp/math-comp/pull/733}}
 amounts to about 5K lines being edited, and 5K lines being simply \emph{removed}.\\
-
+\
+\vspace{-2em}
 \section{Report}
-
 \paragraph{Documentation}
-
-\HB{} is a young tool, some doc was missing, in particular how to use it
+\HB{} is a young tool, some doc was missing, \\
+in particular how to use it
 proficiently. Wiki page TODO.
 
 \MC{} files have an header gathering the interface the user is supposed to used.
