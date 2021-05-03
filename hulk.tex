@@ -245,16 +245,18 @@ is already a \verb+Countable+ type.
 
 \paragraph{Limitations}
 
-The only part of the hierarchy we did not manage to port so far is the
-interdependency between normed $\mathbb{Z}$-modules and numeric domains.
-Indeed, a normed $\mathbb{Z}$-module is a $\mathbb{Z}$-module on $R$
-equipped with a norm with values in a numeric domain $R$,
-while a numeric domain is a $\mathbb{Z}$-module on itself, and this apparent
-cyclicity which was encodable by hand is not supported by \HB{}.
+\MC{} defined a normed $\mathbb{Z}$-module (on $R$) as a
+$\mathbb{Z}$-module equipped with a norm with values in a numeric domain $R$,
+and a numeric domain as a $\mathbb{Z}$-module on itself, and this apparent
+cyclicity which was encodable by hand is not supported either by \HB{}.
 Since these structures are only really needed in \MC{}-analysis,
 we managed to port \MC{} by oversimplifying these structures.
 We plan to extend \HB{} to support this kind of self-reference
-and enable the porting of \MC{}-analysis.
+and enable the porting of \MC{}-analysis. There are also hierarchies of
+morphisms and subobjects in \MC{}, while we could have also ported the former
+the latter follows a different design pattern that is not yet
+supported by \HB{}. Additionally \HB{} does not yet have a built-in check for
+forgetful inheritance~\cite{affeldt:hal-02463336}.
 
 \paragraph{The coding sprint}
 
