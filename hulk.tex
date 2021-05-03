@@ -140,7 +140,7 @@ which are registered as validating the interface. These interfaces are
 implemented following the packed classes discipline which works well in practice
 but has never been easy to master. Pull Requests extending or \emph{modifying the
 hierarchy turned out to be problematic}, hard to review and integrate. Only
-a few were merged, the others were put on hold waiting for the library begin
+a few were merged, the others were put on hold waiting for the library being
 ported to \HB{}.
 
 \begin{wrapfigure}[13]{r}{.35\textwidth}
@@ -153,7 +153,7 @@ ported to \HB{}.
 \
 \HB{} is a set of high level vernacular commands implemented in Coq-Elpi. It takes
 care of automatically synthesizing all the error prone boilerplate required for
-packed classed to work. Users just inputs record declarations,
+packed classed to work. Users just input record declarations,
 standing for the interfaces, and proofs, for the instances.
 They are relieved from
 most of the gibberish of modules, sections, coercions, canonical
@@ -177,11 +177,11 @@ during the sprint and is being archived in the wiki of the project
 plan to share it with the Coq community at the workshop.
 
 The documentation of the \MC{} library itself is also being reworked, updating
-the file header with the new interfaces the user is supposed to used.
+the file header with the new interfaces the user is supposed to use.
 In order to ease the documentation effort we extended \HB{} with two commands,
 one to draw the hierarchy of interfaces, see Figure~\ref{fig:order} for the excerpt
 for the order component, and another one similar to \verb+About+ to access
-metadata specific to the the hierarchy, like the known instances of an interface
+metadata specific to the hierarchy, like the known instances of an interface
 and where they are declared.
 % Thanks to the fact that \HB{} has an internal representation of the hierarchy we could provide a command to
 % generate a dot presentation of it, see~\ref{fig:order} for the excerpt for the
@@ -226,7 +226,7 @@ once a new concept is defined and all its theory is proved, the client
 is never supposed to unfold the concept -- the changes needed to adapt
 proofs (unlocking concepts) were minimal. Moreover, we extended \HB{} with
 a lock command which takes care of the rather verbose declarations of modules
-and theirs signatures.
+and their signatures.
 
 \paragraph{Lightweight factories}
 
@@ -267,11 +267,11 @@ to several \MC{} files and eventually update \HB{} with fixes for blocking bugs.
 We used a locking mechanism based on Github's check list on the pull request,
 whose advancement status was also reflected on the file graph of the library.
 Moreover we systematically used a Zulip stream and a Jitsi video chat per file,
-allowing the developers to work in little groups,
+allowing the developers to work in small groups,
 share their knowledge and progress and quickly reach out for help. Using nix to describe the development
 environment helped keeping the continuous integration in sync with the
 environment used by the developers.
-Still, we could have benefit from more tool support. In particular,
+Still, we could have benefited from more tool support. In particular,
 an UI that would allow executing in parallel two versions of a Coq script
 would have been a plus in this porting activity.
 
