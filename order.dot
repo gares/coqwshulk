@@ -1,9 +1,12 @@
 digraph Hierarchy {
-node [ style = bold, fontname = "sans bold" ];
-Equality [ style = dashed, fontname = "sans" ];
-Choice [ style = dashed, fontname = "sans" ];
-Countable [ style = dashed, fontname = "sans" ];
-Finite [ style = dashed, fontname = "sans" ];
+graph[ ranksep = 0.3, nodesep = 0.15, margin = 0, ratio = "compress", size = "1,1"];
+node [ shape = box, style = "rounded, bold", fontname = "sans bold", margin = .04, width = 0, height = 0 ];
+edge[arrowsize=.8];
+
+Equality [ style = "rounded, dashed", fontname = "sans" ];
+Choice [ style = "rounded, dashed", fontname = "sans" ];
+Countable [ style = "rounded, dashed", fontname = "sans" ];
+Finite [ style = "rounded, dashed", fontname = "sans" ];
 
 Equality -> Choice;
 Equality -> Countable;
