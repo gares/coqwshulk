@@ -254,14 +254,20 @@ and hence with others
 % [NB(rei): just a comment: I insisted on using opam as long as
 % possible but eventually had to use nix].
 
-\section{Plan for \MC{} version 2.0}
+\section{Impact on users and perspectives}
 
-Given \MC{} is widely used in the community, we plan to continue releasing 1.x
-releases for a while. When the first 2.x release is ready, we plan to
-keep maintaining 1.x minimally (anything that can be backported without changing the hierarchy).
-[NB(rei): maybe the abstract could end with what is now possible:
-which mathematical structures will be added/inserted to MC? what is the impact for
-users (do they have to change things)?]
+The introduction of \HB{} might be disruptive for some \MC{} users
+but the benefits outweigh the porting burden.
+%
+The availability of \HB{} to \MC{} will trigger a number of immediate
+improvements: addition of new structures (e.g., lattices and orders in
+\verb!order.v!), simplified integration of existing user developments
+(e.g., dioid), etc.
+%
+Still, given \MC{} is widely used in the community, we plan to continue
+releasing 1.x releases for a while. When the first 2.x release is ready,
+we plan to keep maintaining 1.x minimally (anything that can be backported
+without changing the hierarchy).
 
 \label{sect:bib}
 \bibliographystyle{plain}
