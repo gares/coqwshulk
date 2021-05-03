@@ -112,7 +112,7 @@
 %{\small
 %\tableofcontents}
 
-%\section{To mention}
+%\subsection*{To mention}
 %
 %Processing in EasyChair - number of pages.
 %
@@ -120,9 +120,9 @@
 %class, errors).
 
 %------------------------------------------------------------------------------
-\section{Context}
-\label{sect:introduction}
-
+%\subsection*{Context}
+%\label{sect:introduction}
+~\\
 We report on the porting of the Mathematical Components library (hereafter \MC{})
 to the Hierarchy Builder~\cite{cohen_et_al:LIPIcs:2020:12356} tool (hereafter \HB{}).
 
@@ -167,8 +167,8 @@ using the new commands, \emph{without changing proofs} in any substantial way.
 At the time of writing the patch (\href{https://github.com/math-comp/math-comp/pull/733}{math-comp\#733})
 amounts to about 5K lines being edited, and 5K lines being simply \emph{removed}.\\
 \
-\vspace{-2em}
-\section{Report}
+%\vspace{-2em}
+%\subsection*{Report}
 \paragraph{Documentation}
 \HB{} is a young tool lacking documentation\\
 on how to use it proficiently. Some of this knowledge emerged\\
@@ -226,11 +226,12 @@ proofs (unlocking concepts) were minimal. Moreover we extended \HB{} with
 a lock command which takes care of the rather verbose declarations of modules
 and theirs signatures.
 
-\paragraph{Instances}
+\paragraph{Lightweight factories}
 
 \HB{} provides a built-in concept of \newterm{factory}, a virtual interface which is
-compiled to real interfaces automatically. They are mandatory to get backward
-compatibility when a library evolves. However, sometimes, defining a factory is
+compiled to real interfaces automatically. % They are mandatory to get backward
+%compatibility when a library evolves. 
+However, sometimes, defining a factory is
 unnecessarily heavy and we prefer to rely on either one or a combination of the
 following techniques: we use a lemma which produces a
 factory from some (smaller) input; we declare a type alias (identity definition)
@@ -269,7 +270,7 @@ Still, we could have benefit from more tool support. In particular,
 an UI that would allow executing in parallel two versions of a Coq script
 would have been a plus in this porting activity.
 
-\section{Impact on \MC{} users and perspectives}
+\paragraph{Impact on \MC{} users and perspectives}
 
 The switch to \HB{} will lead to \MC{} version 2.0. Updating to it will cause some
 breakage but we believe the benefits outweigh the porting burden, if only because
