@@ -210,9 +210,9 @@ and where they are declared.
 
 Even if Type Theory lacks a mechanisms to enforce abstraction barriers,
 the \MC{} library is built as if one was there: once a new concept is defined
-all it's theory is prove (by accessing its definition, and after that the client
+and all it's theory is proved (by accessing its definition), after that the client
 is never supposed to unfold the concept. When definitions pile up, unfolding
-them can lead to term which are large, too large even for a computer to handle.
+them can lead to terms which are large, too large to handle even for a computer.
 In order to prevent performance issues the \MC{} library always ``locked''
 some definitions, hiding them behind module signatures.
 Since \HB{} uses a more regular but less ``efficient'' representation of
