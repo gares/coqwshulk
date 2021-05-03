@@ -125,7 +125,8 @@ to the Hierarchy Builder~\cite{cohen_et_al:LIPIcs:2020:12356} tool (hereafter \H
 \MC{} is an extensive and coherent repository of formalized
 mathematical theories. At the time of writing about 40 opam packages depend
 on some components from this library and these packages are not exclusively
-focusing on mathematics (e.g., Iris, QuickChick, Disel, \ldots).
+focusing on mathematics (e.g., Iris, QuickChick, Disel, \ldots). To our
+knowledge about 100 papers about formal proofs build on top of \MC{}.
 The library is made of 91 files for a total 124 000 lines of code.
 
 The key to keep the library growing in a rational way is that it revolves
@@ -155,74 +156,86 @@ most of the gibberish of modules, sections, coercions, canonical
 structures, implicit arguments, phantom abbreviations, \ldots
 
 In the week from the 6th to the 9th of April 2021 the authors of this abstract
-gathered (virtually) for a sprint on porting the \MC{} to
+gathered (virtually) for a sprint on porting the \MC{} library to
 \HB{}. The whole library finally compiled on April 20.
 The porting consisted in declaring all the interfaces and their instances
 using the new commands, \emph{without changing proofs} in any substantial way.
-At the time of writing the patch~\footnote{\url{https://github.com/math-comp/math-comp/pull/733}}
+At the time of writing the patch (\href{https://github.com/math-comp/math-comp/pull/733}{math-comp\#733})
 amounts to about 5K lines being edited, and 5K lines being simply \emph{removed}.\\
 \
 \vspace{-2em}
 \section{Report}
 \paragraph{Documentation}
-\HB{} is a young tool, some doc was missing, \\
-in particular how to use it
-proficiently. Wiki page TODO [NB(rei): you mean \url{https://github.com/math-comp/hierarchy-builder/wiki}?].
+\HB{} is a young tool lacking documentation\\
+on how to use it proficiently. Some of this knowledge emerged\\
+during the sprint and is being archived in the wiki of the project and we
+plan to share it with the Coq community at the workshop.[NB(rei): you mean \url{https://github.com/math-comp/hierarchy-builder/wiki}?].
 
-\MC{} files have an header gathering the interface the user is supposed to used.
-They had to be updated, still in process. Thanks to the fact that \HB{} has an
-internal representation of the hierarchy we could provide a command to
-generate a dot presentation of it, see~\ref{fig:order} for the excerpt for the
-order component, which lost 1300 lines in the process. In addition to that about command to get \HB{}
-specific info.
-
-\begin{wrapfigure}[12]{r}{.40\textwidth}
-\vspace{-1em}
-\begin{Verbatim}[fontsize=\footnotesize]
- HB: Order.Total.type is a structure
-     (from "./ssreflect/order.v", line 1588)
- HB: Order.Total.type characterizing operations
-     and axioms are:
-     - le_total
- ...
- HB: Order.Total inherits from:
-     - eqtype.Equality
-     - choice.Choice
-     - Order.POrder
-     - Order.Lattice
-     - Order.DistrLattice
- HB: Order.Total is inherited by:
-     - Order.FinTotal
-\end{Verbatim}
-\vspace{-1.5em}
-\caption{\small {\tt HB.about.}}
-\label{fig:orderabout}
-\end{wrapfigure}
-
+The documentation of the \MC{} library itself is also being reworked, updating
+the file header with the new interfaces the user is supposed to used.
+In order to ease the documentation effort we extended \HB{} with two commands,
+one to draw the hierarchy of interfaces, see~\ref{fig:order} for the excerpt
+for the order component, and another one similar to \verb+About+ to access
+metadata specific to the the hierarchy, like the known instances of an interface
+and where they are declared.
+% Thanks to the fact that \HB{} has an internal representation of the hierarchy we could provide a command to
+% generate a dot presentation of it, see~\ref{fig:order} for the excerpt for the
+% order component, which lost 1300 lines in the process. In addition to that about command to get \HB{}
+% specific info.
+% 
+% \begin{wrapfigure}[12]{r}{.40\textwidth}
+% \vspace{-1em}
+% \begin{Verbatim}[fontsize=\footnotesize]
+%  HB: Order.Total.type is a structure
+%      (from "./ssreflect/order.v", line 1588)
+%  HB: Order.Total.type characterizing operations
+%      and axioms are:
+%      - le_total
+%  ...
+%  HB: Order.Total inherits from:
+%      - eqtype.Equality
+%      - choice.Choice
+%      - Order.POrder
+%      - Order.Lattice
+%      - Order.DistrLattice
+%  HB: Order.Total is inherited by:
+%      - Order.FinTotal
+% \end{Verbatim}
+% \vspace{-1.5em}
+% \caption{\small {\tt HB.about.}}
+% \label{fig:orderabout}
+% \end{wrapfigure}
+% 
 \paragraph{Performance}
 
-Type theory lacks a notion of abstraction barrier. The library is already built
-as if one was there: you define a concept, prove some properties, and never
-unfold that concept. Still this is just a common practice with no correspondence
-in type theory nor in Coq vernacular. \MC{} always suffered from per issues, concepts pile up,
-and the conversion checking (term comparison) algorithm can get lost. The
-library employed various locking mechanisms to mitigate the problem. \verb+HB.lock+
-provides one a little cost, example.
-Since \HB{} uses a more regular, but less ``efficient'' representation of classes
-we had to lock a bit more. Given the library is already built with this in mind,
-the changes needed (unlocking) were minimal.
+Even if Type Theory lacks a mechanisms to enforce abstraction barriers,
+the \MC{} library is built as if one was there: once a new concept is defined
+all it's theory is prove (by accessing its definition, and after that the client
+is never supposed to unfold the concept. When definitions pile up, unfolding
+them can lead to term which are large, too large even for a computer to handle.
+In order to prevent performance issues the \MC{} library always ``locked''
+some definitions, hiding them behind module signatures.
+Since \HB{} uses a more regular but less ``efficient'' representation of
+structures we had to lock a few more concepts. Given that the library
+was already built with abstraction barriers in mind the changes needed to adapt
+proofs (unlocking concepts) were minimal. Moreover we extended \HB{} with
+a lock command which takes care of the rather verbose declarations of modules
+and theirs signatures.
 
 \paragraph{Instances}
 
 \HB{} provides a built-in concept of \newterm{factory}, a virtual interface which is
 compiled to real interfaces automatically. They are mandatory to get backward
 compatibility when a library evolves. However, sometimes, defining a factory is
-slightly too heavy and we prefer to rely on either one or a combination of the
-following techniques: either we use lemma or definition which produces a
-factory from some input, or we declare an alias (identity definition) which
-carries additional instances, (e.g., \verb+can_type+, \verb+sub_type+, \ldots) in
-combination with \verb+Structure.copy T alias+ which copies all the structure
-of an alias \verb+alias+ on \verb+T+.
+unnecessarily heavy and we prefer to rely on either one or a combination of the
+following techniques: we use a lemma which produces a
+factory from some (smaller) input; we declare a type alias (identity definition)
+which already validates some interfaces and we copy all its instances to a new
+type via an automatically generated tool. For example
+\verb+Countable.copy T (can_type fgK)+ equips a type \verb+T+ with
+\verb+Countable+, \verb+Choice+ and \verb+Equality+ instances proviso a
+proof \verb+(fgK : cancel f g)+ where \verb+(f : T -> T')+ and \verb+T'+
+is already a \verb+Countable+ type.
 
 \paragraph{Limitations}
 
@@ -237,42 +250,35 @@ we managed to port \MC{} by oversimplifying these structures.
 We plan to extend \HB{} to support this kind of self-reference
 and enable the porting of \MC{}-analysis.
 
-\paragraph{Porting activity}
+\paragraph{The scoding sprint}
 
-One of the challenges of the porting activity was to contribute simultaneously
-to several files within \MC{} and \HB{} with minimal bureaucracy, and making sure
-everyone uses the same versions of every single dependency.
-
-Part of this objective was achieved through a rational use of several
-communication tools: a Zulip chat and a video meeting for each
-collaborative dev sessions. Help from others was obtained very fast.
-%[NB(rei): git diff master hierarchy-builder was also useful to
-%see what others did and look for a pattern]
-
-The other part was achieved through a nix shell which was kept updated
-at all times to reflect the current reference configuration.
-Anyone using this nix-shell had the guarantee to be in sync with our CI
-and hence with others
-% [NB(rei): just a comment: I insisted on using opam as long as
-% possible but eventually had to use nix].
+One of the challenges of the sprint was to contribute simultaneously
+to several \MC{} files and eventually update \HB{} with fixed for blocking bugs.
+We used a locking mechanism based on Github's check list on the pull request,
+whose advancement status was also reflected on the file graph of the library.
+Moreover we systematically used a Zulip stream and a Jitsi video chat per file,
+allowing the developers to work in little groups, share they progress and
+also quickly reach out for help. Using nix to describe the development
+environment helped keeping the continuous integration in sync with the
+environment used by the developers.
 Still, we could have benefit from more tool support. In particular,
-an interactive tool that would allow executing in parallel   
-two versions of a Coq script would have been a plus in this porting activity.
+an UI that would allow executing in parallel two versions of a Coq script
+would have been a plus in this porting activity.
 
-\section{Impact on users and perspectives}
+\section{Impact on \MC{} users and perspectives}
 
-The introduction of \HB{} might be disruptive for some \MC{} users
-but the benefits outweigh the porting burden.
+The switch to \HB{} leads to \MC{} version 2.0. Updating to it will cause some
+breakage but we believe the benefits outweigh the porting burden, if only because
+once \HB{} is in place we will be able to rework the hierarchy
+\emph{without breaking client code}, since factories can serve as backward
+compatible interfaces. Moreover it will trigger a number
+of immediate improvements to the library from the addition of new, long awaited,
+structures like semilattices and semirings to the integration of existing user
+developments (e.g., dioid).
 %
-The availability of \HB{} to \MC{} will trigger a number of immediate
-improvements: addition of new structures (e.g., lattices and orders in
-\verb!order.v!), simplified integration of existing user developments
-(e.g., dioid), etc.
-%
-Still, given \MC{} is widely used in the community, we plan to continue
-releasing 1.x releases for a while. When the first 2.x release is ready,
-we plan to keep maintaining 1.x minimally (anything that can be backported
-without changing the hierarchy).
+Still, given that \MC{} is widely used by the community, we plan to continue
+maintaining the 1.x branch even after version 2.0 is officially released
+(possibly backporting minor updates which don't require changing the hierarchy).
 
 \label{sect:bib}
 \bibliographystyle{plain}
