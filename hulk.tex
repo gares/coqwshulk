@@ -148,7 +148,7 @@ ported to \HB{}.
 	\includegraphics[width=.35\textwidth]{order.pdf}
   \caption{\small Hierarchy in {\tt order.v}}
 	\label{fig:order}
-  
+
 \end{wrapfigure}
 \
 \HB{} is a set of high level vernacular commands implemented in Coq-Elpi. It takes
@@ -187,7 +187,7 @@ and where they are declared.
 % generate a dot presentation of it, see~\ref{fig:order} for the excerpt for the
 % order component, which lost 1300 lines in the process. In addition to that about command to get \HB{}
 % specific info.
-% 
+%
 % \begin{wrapfigure}[12]{r}{.40\textwidth}
 % \vspace{-1em}
 % \begin{Verbatim}[fontsize=\footnotesize]
@@ -210,7 +210,7 @@ and where they are declared.
 % \caption{\small {\tt HB.about.}}
 % \label{fig:orderabout}
 % \end{wrapfigure}
-% 
+%
 \paragraph{Performance}
 
 Even if Type Theory lacks a mechanisms to enforce abstraction barriers,
@@ -231,7 +231,7 @@ and theirs signatures.
 
 \HB{} provides a built-in concept of \newterm{factory}, a virtual interface which is
 compiled to real interfaces automatically. % They are mandatory to get backward
-%compatibility when a library evolves. 
+%compatibility when a library evolves.
 However, sometimes, defining a factory is
 unnecessarily heavy and we prefer to rely on either one or a combination of the
 following techniques: we use a lemma which produces a
@@ -245,16 +245,17 @@ is already a \verb+Countable+ type.
 
 \paragraph{Limitations}
 
-\MC{} defined a normed $\mathbb{Z}$-module (on $R$) as a
-$\mathbb{Z}$-module equipped with a norm with values in a numeric domain $R$,
-and a numeric domain as a $\mathbb{Z}$-module on itself, and this apparent
-cyclicity which was encodable by hand is not supported either by \HB{}.
+\MC{} defined a normed $\mathbb{Z}$-module as a
+$\mathbb{Z}$-module equipped with a norm with values in a numeric domain,
+and a numeric domain as a $\mathbb{Z}$-module on itself; this apparent
+cyclicity which was encodable by hand~\cite{affeldt:hal-02463336}
+is not supported by \HB{}.
 Since these structures are only really needed in \MC{}-analysis,
-we managed to port \MC{} by oversimplifying these structures.
+we managed to port \MC{} by oversimplifying them.
 We plan to extend \HB{} to support this kind of self-reference
-and enable the porting of \MC{}-analysis. There are also hierarchies of
-morphisms and subobjects in \MC{}, while we could have also ported the former
-the latter follows a different design pattern that is not yet
+thus enabling the porting of \MC{}-analysis. There are also hierarchies of
+morphisms and subobjects in \MC{}, while we could have ported the former,
+the latter follows a design pattern that is not yet
 supported by \HB{}. Additionally \HB{} does not yet have a built-in check for
 forgetful inheritance~\cite{affeldt:hal-02463336}.
 
@@ -265,8 +266,8 @@ to several \MC{} files and eventually update \HB{} with fixes for blocking bugs.
 We used a locking mechanism based on Github's check list on the pull request,
 whose advancement status was also reflected on the file graph of the library.
 Moreover we systematically used a Zulip stream and a Jitsi video chat per file,
-allowing the developers to work in little groups, share they progress and
-also quickly reach out for help. Using nix to describe the development
+allowing the developers to work in little groups,
+share their knowledge and progress and quickly reach out for help. Using nix to describe the development
 environment helped keeping the continuous integration in sync with the
 environment used by the developers.
 Still, we could have benefit from more tool support. In particular,
@@ -275,17 +276,17 @@ would have been a plus in this porting activity.
 
 \paragraph{Impact on \MC{} users and perspectives}
 
-The switch to \HB{} will lead to \MC{} version 2.0. Updating to it will cause some
-breakage but we believe the benefits outweigh the porting burden, if only because
-once \HB{} is in place we will be able to rework the hierarchy
+The switch to \HB{} will lead to \MC{} version 2.0. Updating to it will cause
+breakage but we believe the benefits outweigh the porting burden,
+if only because we will then be able to rework the hierarchy
 \emph{without breaking client code}, since factories can serve as backward
 compatible interfaces. Moreover it will trigger a number
 of immediate improvements to the library from the addition of new, long awaited,
 structures like semilattices and semirings to the integration of existing user
 developments (e.g., dioid).
 %
-Still, given that \MC{} is widely used by the community, we plan to continue
-maintaining the 1.x branch even after version 2.0 is officially released
+Still, since \MC{} is widely used, we plan to continue
+maintaining the 1.x branch even after version 2.0 is released
 (possibly backporting updates which don't require changing the hierarchy).
 
 \label{sect:bib}
