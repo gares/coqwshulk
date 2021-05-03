@@ -213,17 +213,18 @@ and where they are declared.
 %
 \paragraph{Performance}
 
-Even if Type Theory lacks a mechanisms to enforce abstraction barriers,
-the \MC{} library is built as if one was there: once a new concept is defined
-and all it's theory is proved (by accessing its definition), after that the client
-is never supposed to unfold the concept. When definitions pile up, unfolding
-them can lead to terms which are large, too large to handle even for a computer.
-In order to prevent performance issues the \MC{} library always ``locked''
+When definitions pile up, unfolding
+them can lead to terms which are too large to handle even for a computer,
+and Type Theory provides no lightweight way to enforce abstraction barriers.
+In order to prevent performance issues the \MC{} library ``locks''
 some definitions, hiding them behind module signatures.
 Since \HB{} uses a more regular but less ``efficient'' representation of
-structures we had to lock a few more concepts. Given that the library
-was already built with abstraction barriers in mind the changes needed to adapt
-proofs (unlocking concepts) were minimal. Moreover we extended \HB{} with
+structures we had to lock more definitions.
+Given that the \MC{} library was already built with abstraction barriers
+in mind --
+once a new concept is defined and all its theory is proved, the client
+is never supposed to unfold the concept -- the changes needed to adapt
+proofs (unlocking concepts) were minimal. Moreover, we extended \HB{} with
 a lock command which takes care of the rather verbose declarations of modules
 and theirs signatures.
 
