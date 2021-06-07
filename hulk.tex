@@ -129,7 +129,7 @@ to the Hierarchy Builder~\cite{cohen_et_al:LIPIcs:2020:12356} tool (hereafter \H
 \MC{} is an extensive and coherent repository of formalized
 mathematical theories. At the time of writing about 40 opam packages depend
 on some components from this library and these packages are not exclusively
-focusing on mathematics (e.g., Iris, QuickChick, Disel, \ldots). To our
+focusing on mathematics (e.g., QuickChick, Disel, \ldots). To our
 knowledge about 100 papers about formal proofs build on top of \MC{}.
 The library is made of 91 files for a total 124 000 lines of code.
 
@@ -139,11 +139,12 @@ Interfaces come with theories which apply, automatically, to all the objects
 which are registered as validating the interface. These interfaces are
 implemented following the packed classes discipline which works well in practice
 but has never been easy to master. Pull Requests extending or \emph{modifying the
-hierarchy turned out to be problematic}, hard to review and integrate. Only
-a few were merged, the others were put on hold waiting for the library being
+hierarchy turned out to be problematic}, hard to review and integrate due to their
+length and complexity. Only
+a few were merged, the others were put on hold waiting for the library to be
 ported to \HB{}.
 
-\begin{wrapfigure}[13]{r}{.35\textwidth}
+\begin{wrapfigure}[16]{r}{.35\textwidth}
   \vspace{-1em}
 	\includegraphics[width=.35\textwidth]{order.pdf}
   \caption{\small Hierarchy in {\tt order.v}}
@@ -151,9 +152,10 @@ ported to \HB{}.
 
 \end{wrapfigure}
 \
-\HB{} is a set of high level vernacular commands implemented in Coq-Elpi. It takes
+\HB{} is a set of high level vernacular commands implemented in Coq-Elpi, an
+extension language for Coq developed by Tassi. \HB{} takes
 care of automatically synthesizing all the error prone boilerplate required for
-packed classed to work. Users just input record declarations,
+packed classes to work. Users just input record declarations,
 standing for the interfaces, and proofs, for the instances.
 They are relieved from
 most of the gibberish of modules, sections, coercions, canonical
@@ -162,10 +164,11 @@ structures, implicit arguments, phantom abbreviations, \ldots
 In the week from the 6th to the 9th of April 2021 the authors of this abstract
 gathered (virtually) for a sprint on porting the \MC{} library to
 \HB{}. The whole library finally compiled on April 20.
-The porting consisted in declaring all the interfaces and their instances
+The porting consisted of declaring all the interfaces and their instances
 using the new commands, \emph{without changing proofs} in any substantial way.
 At the time of writing the patch (\href{https://github.com/math-comp/math-comp/pull/733}{math-comp\#733})
-amounts to about 5K lines being edited, and 5K lines being simply \emph{removed}.\\
+amounts to about 5K lines being edited (the declaration of the hierarchy and
+the declarations of canonical instances), and 5K lines being simply \emph{removed}.\\
 \
 %\vspace{-2em}
 %\subsection*{Report}
@@ -218,13 +221,14 @@ them can lead to terms which are too large to handle even for a computer,
 and Type Theory provides no lightweight way to enforce abstraction barriers.
 In order to prevent performance issues the \MC{} library ``locks''
 some definitions, hiding them behind module signatures.
-Since \HB{} uses a more regular but less ``efficient'' representation of
-structures we had to lock more definitions.
+Since \HB{} uses a less ``efficient'' representation of
+structures (more regular, not hand-optimized) we had to lock a handful
+more definitions.
 Given that the \MC{} library was already built with abstraction barriers
 in mind --
 once a new concept is defined and all its theory is proved, the client
 is never supposed to unfold the concept -- the changes needed to adapt
-proofs (unlocking concepts) were minimal. Moreover, we extended \HB{} with
+proofs (unlocking concepts) were minimal. We extended \HB{} with
 a lock command which takes care of the rather verbose declarations of modules
 and their signatures.
 
@@ -241,7 +245,8 @@ which already validates some interfaces and we copy all its instances to a new
 type via an automatically generated tool. For example
 \verb+Countable.copy T (can_type fgK)+ equips a type \verb+T+ with
 \verb+Countable+, \verb+Choice+ and \verb+Equality+ instances proviso a
-proof \verb+(fgK : cancel f g)+ where \verb+(f : T -> T')+ and \verb+T'+
+proof \verb+(fgK : cancel f g)+ where \verb+cancel f g+ expresses that fact
+that \verb+(f : T -> T')+ and \verb+g+ are inverse functions, and where \verb+T'+
 is already a \verb+Countable+ type.
 
 \paragraph{Limitations}
