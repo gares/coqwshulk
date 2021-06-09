@@ -111,6 +111,21 @@ End GoodInheritance.
 (* ********************** Feather factories *********************** *)
 (* ******************************************************************* *)
 
+(*
+
+  HB comes with a concept of factory, a virtual interface that is compiled
+  down to the real ones.
+
+  When the contents of a factory are just one lemma, the following trick
+  may come handy.
+
+  We define a type "link" which is convertible to a new type T but
+  carrier, as a dummy argument, a proof that T is linked to some known
+  type xT. We can then use "link" to transfer (copy) structure instances
+  across the link.
+
+*)
+
 Module Feather.
 
 HB.mixin Record IsDiscrete T := {
@@ -125,9 +140,11 @@ HB.mixin Record IsSingleton T of IsDiscrete T := {
 }.
 HB.structure Definition Singleton := { T of IsSingleton T }.
 
-(* xT is a right type, T is a new type linked to xT *)
-Definition link {xT T : Type} {f : xT -> T} {g : T -> xT} (e : forall x, f (g x) = x) := T.
+(* xT is a rich type, T is a new type linked to xT by something. In this case
+   a very strong cancellation lemma *)
+Definition link {xT T : Type} {f : xT -> T} {g : T -> xT} (canfg : forall x, f (g x) = x) := T.
 
+(* We explain HB how to transfer Equality over link *)
 Section TransferEQ.
 
 Context {eT : Equality.type} {T : Type} {f : eT -> T} {g : T -> eT}.
@@ -146,6 +163,7 @@ HB.instance Definition link_IsDiscrete :=
 
 End TransferEQ.
 
+(* We explain HB how to transfer Singleton over link *)
 Section TransferSingleton.
 
 Context {eT : Singleton.type} {T : Type} {f : eT -> T} {g : T -> eT}.
@@ -163,6 +181,7 @@ HB.instance Definition _ := IsSingleton.Build (link canfg) link_def link_all_def
 
 End TransferSingleton.
 
+(* We assume a known type B which is both an Equality and a Singleton *)
 Axioms B : Type.
 
 Axiom testB : B -> B -> bool.
@@ -173,6 +192,7 @@ Axiom defB : B.
 Axiom all_defB : forall x, eqtest x defB = true.
 HB.instance Definition _ := IsSingleton.Build B defB all_defB.
 
+(* Now we copy all instances from B to A via link *)
 Axiom A : Type.
 Axiom f : B -> A.
 Axiom g : A -> B.
