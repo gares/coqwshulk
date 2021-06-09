@@ -234,13 +234,13 @@ Time Fail reflexivity. (* takes 7s, the original body is restored *)
 Abort.
 
 Print Module Type new_conceptLocked.
-Print Module Type new_concept.
+Print Module new_concept.
 (*
    Module Type new_conceptLocked = Sig
      Parameter body : nat.
      Parameter unlock : body = 999999
    End
-   Module new_concept : new_conceptLocked
+   Module new_concept : new_conceptLocked := ...
 *)
 Print new_concept.
 (*
