@@ -120,7 +120,7 @@ End GoodInheritance.
   may come handy.
 
   We define a type "link" which is convertible to a new type T but
-  carrier, as a dummy argument, a proof that T is linked to some known
+  carries, as a dummy argument, a proof that T is linked to some known
   type xT. We can then use "link" to transfer (copy) structure instances
   across the link.
 
