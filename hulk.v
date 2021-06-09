@@ -224,7 +224,7 @@ Module SlowFailure.
    at the right absraction level, but also for Coq itself, since it may be
    tricked into unfolding definitions and manipualate huge terms.
 
-   HB.lock is a tool to easily impose abstrction barriers. It uses modules
+   HB.lock is a tool to easily impose abstraction barriers. It uses modules
    and module signatures to seal the body of a definition, keeping accees to
    it via an equation.
 
