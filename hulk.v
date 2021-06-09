@@ -52,7 +52,7 @@ Fail reflexivity. (* What? It used to work! *)
 Fail rewrite sq_mul. (* Lemmas don't cross the container either! *)
 (* Let's investigate *)
 rewrite /mul/= /sq/=.
-(* As we expect, we are on the option typem in the LHS it's the Sq built using
+(* As we expect, we are on the option type. In the LHS it is the Sq built using
    the NFI instance
  
      option_square w = option_mul w w
@@ -60,7 +60,7 @@ rewrite /mul/= /sq/=.
 rewrite /option_mul/=.
 rewrite /option_square/sq/=.
 congr (match w with Some n => _ | None => None end).
-(* The branched for Some differ, since w is a variable,
+(* The branches for Some differ, since w is a variable,
    they don't compare as equal
 
       (fun n : W => Some (mul n n)) =
@@ -193,10 +193,31 @@ Require Import Arith.
 
 Module SlowFailure.
 
-Definition large := 999999.
+(* It is natural to pile definitions up and reuse things you have.
 
-Lemma test x : large ^ x ^ large = x ^ large ^ large.
-Time Fail reflexivity. (* takes 7s, both by and // call reflexivity *)
+   Sometimes we may want to set up an abstraction barrier.
+   For example one may define a mathematical concept using lists and their
+   operations, provide a few lemmas about the new concept, and expect the
+   user to never unfold the concept and work directly with lists.
+
+   Abstraction barriers are not only good for clients, which are granted to work
+   at the right absraction level, but also for Coq itself, since it may be
+   tricked into unfolding definitions and manipualate huge terms.
+
+   HB.lock is a tool to easily impose abstrction barriers. It uses modules
+   and module signatures to seal the body of a definition, keeping accees to
+   it via an equation.
+
+*)
+
+(* not a very clever construction, but a large one. Bare with us. *)
+Definition new_concept := 999999.
+
+Lemma test x : new_concept ^ x ^ new_concept = x ^ new_concept ^ new_concept.
+Proof.
+(* this goal is not trivial, and maybe even false, but you may call
+   some automation on it anyway *)
+Time Fail reflexivity. (* takes 7s, note that both by and // call reflexivity *)
 Abort.
 
 End SlowFailure.
@@ -204,22 +225,26 @@ End SlowFailure.
 
 Module FastFailure.
 
-HB.lock Definition large := 999999.
+HB.lock Definition new_concept := 999999.
 
-Lemma test x : large ^ x ^ large = x ^ large ^ large.
+Lemma test x : new_concept ^ x ^ new_concept = x ^ new_concept ^ new_concept.
 Time Fail reflexivity. (* takes 0s *)
-rewrite large.unlock.
-Time Fail reflexivity. (* takes 7s *)
+rewrite new_concept.unlock.
+Time Fail reflexivity. (* takes 7s, the original body is restored *)
 Abort.
 
-Print Module Type largeLocked.
+Print Module Type new_conceptLocked.
+Print Module Type new_concept.
 (*
-   Parameter body : nat.
-   Parameter unlock : body = 999999
+   Module Type new_conceptLocked = Sig
+     Parameter body : nat.
+     Parameter unlock : body = 999999
+   End
+   Module new_concept : new_conceptLocked
 *)
-Print large.
+Print new_concept.
 (*
-Notation large := large.body
+   Notation new_concept := new_concept.body
 *)
 
 End FastFailure.
