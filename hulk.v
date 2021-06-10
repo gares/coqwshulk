@@ -237,11 +237,11 @@ Module SlowFailure.
    user to never unfold the concept and work with lists directly.
 
    Abstraction barriers are not only good for clients, which are granted to work
-   at the right absraction level, but also for Coq itself, since it may be
-   tricked into unfolding definitions and manipualate huge terms.
+   at the right abstraction level, but also for Coq itself, since it may be
+   tricked into unfolding definitions and manipulate huge terms.
 
    HB.lock is a tool to easily impose abstraction barriers. It uses modules
-   and module signatures to seal the body of a definition, keeping accees to
+   and module signatures to seal the body of a definition, keeping access to
    it via an equation.
 
 *)
@@ -282,6 +282,8 @@ Print new_concept.
 (*
    Notation new_concept := new_concept.body
 *)
+
+Canonical unlock_new_concept := Unlockable new_concept.unlock.
 
 End FastFailure.
 
