@@ -129,21 +129,30 @@ End GoodInheritance.
 
 Module Feather.
 
-HB.mixin Record IsDiscrete T := {
+(* We need a hierarchy with a few structure, here we Equality -> Singleton *)
+HB.mixin Record HasEqDec T := {
     eqtest : T -> T -> bool;
     eqOK : forall x y, reflect (x = y) (eqtest x y);
 }.
-HB.structure Definition Equality := { T of IsDiscrete T }.
+HB.structure Definition Equality := { T of HasEqDec T }.
 
-HB.mixin Record IsSingleton T of IsDiscrete T := {
+HB.mixin Record IsContractible T of HasEqDec T := {
     def : T;
     all_def : forall x, eqtest x def = true;
 }.
-HB.structure Definition Singleton := { T of IsSingleton T }.
+HB.structure Definition Singleton := { T of IsContractible T }.
 
-(* xT is a rich type, T is a new type linked to xT by something. In this case
-   a very strong cancellation lemma *)
-Definition link {xT T : Type} {f : xT -> T} {g : T -> xT} (canfg : forall x, f (g x) = x) := T.
+(*
+   This is the type which is used as a feather factory.
+
+   - xT plays the role of a rich type,
+   - T is a new type linked to xT by some lemma. In this case a very strong
+     cancellation lemma canfg
+*)
+Definition link {xT T : Type} {f : xT -> T} {g : T -> xT}
+                (canfg : forall x, f (g x) = x)
+              :=
+                 T. (* (link canfg) is convertible to T *)
 
 (* We explain HB how to transfer Equality over link *)
 Section TransferEQ.
@@ -159,8 +168,10 @@ rewrite /link_eqtest; case: (eqOK (g x) (g y)) => [E|abs].
   by constructor; rewrite -[x]canfg -[y]canfg E canfg.
 by constructor=> /(f_equal g)/abs.
 Qed.
-HB.instance Definition link_IsDiscrete :=
-  IsDiscrete.Build (link canfg) link_eqtest link_eqOK.
+
+(* (link canfg) is now an Equality instance *)
+HB.instance Definition link_HasEqDec :=
+  HasEqDec.Build (link canfg) link_eqtest link_eqOK.
 
 End TransferEQ.
 
@@ -178,7 +189,8 @@ rewrite /link_def; have /eqOK <- := all_def (g x).
 by rewrite canfg; case: (eqOK x x).
 Qed.
 
-HB.instance Definition _ := IsSingleton.Build (link canfg) link_def link_all_def.
+(* (link canfg) is now a Signleton instance *)
+HB.instance Definition _ := IsContractible.Build (link canfg) link_def link_all_def.
 
 End TransferSingleton.
 
@@ -187,11 +199,11 @@ Axioms B : Type.
 
 Axiom testB : B -> B -> bool.
 Axiom testOKB : forall x y, reflect (x = y) (testB x y).
-HB.instance Definition _ := IsDiscrete.Build B testB testOKB.
+HB.instance Definition _ := HasEqDec.Build B testB testOKB.
 
 Axiom defB : B.
 Axiom all_defB : forall x, eqtest x defB = true.
-HB.instance Definition _ := IsSingleton.Build B defB all_defB.
+HB.instance Definition _ := IsContractible.Build B defB all_defB.
 
 (* Now we copy all instances from B to A via link *)
 Axiom A : Type.
@@ -199,12 +211,13 @@ Axiom f : B -> A.
 Axiom g : A -> B.
 Axiom canfg : forall x, f (g x) = x.
 
+(* We take all the instances up to Singleton on (link canfg) and we copy them
+   on A. Recall (link canfg) is convertible to A *)
 HB.instance Definition _ := Singleton.copy A (link canfg).
 
 HB.about A. (* both Equality and Singleton have been copied *)
 
 End Feather.
-
 
 (* ******************************************************************* *)
 (* ********************** Abstraction barriers *********************** *)
@@ -214,12 +227,14 @@ Require Import Arith.
 
 Module SlowFailure.
 
-(* It is natural to pile definitions up and reuse things you have.
-
-   Sometimes we may want to set up an abstraction barrier.
-   For example one may define a mathematical concept using lists and their
-   operations, provide a few lemmas about the new concept, and expect the
-   user to never unfold the concept and work directly with lists.
+(* 
+   When building a library it is natural to stack definitions up and reuse
+   things you already have as much as possible.
+   
+   More often that not we want to set up abstraction barriers.
+   For example one may define a mathematical concept using, say, lists and their
+   operations, provide a few lemmas about the new concept, and then expect the
+   user to never unfold the concept and work with lists directly.
 
    Abstraction barriers are not only good for clients, which are granted to work
    at the right absraction level, but also for Coq itself, since it may be
@@ -269,3 +284,66 @@ Print new_concept.
 *)
 
 End FastFailure.
+
+(* ******************************************************************* *)
+(* ******************************* Joins ***************************** *)
+(* ******************************************************************* *)
+
+(*
+
+  All structures which are not leaves must be joinable
+
+*)
+
+Module MissingJoin.
+
+HB.mixin Record isTop M := { }.
+HB.structure Definition Top := {M of isTop M}.
+
+HB.mixin Record isA1 M of Top M := { }.
+HB.structure Definition A1 := {M of isA1 M & isTop M}.
+
+HB.mixin Record isA2 M of Top M := { }.
+HB.structure Definition A2 := {M of isA2 M & isTop M}.
+
+HB.mixin Record isB1 M of A1 M := { }.
+HB.structure Definition B1 := {M of isB1 M & }.
+
+HB.mixin Record isB2 M of A2 M := { }.
+HB.structure Definition B2 :=  {M of isB2 M & isA2 M }.
+
+HB.structure Definition B2A1 := {M of B2 M & A1 M }.
+
+Fail HB.structure Definition A2B1 := {M of A2 M & B1 M }.
+
+HB.graph "missing_join.dot".
+
+End MissingJoin.
+
+
+Module GoodJoin.
+
+HB.mixin Record isTop M := { }.
+HB.structure Definition Top := {M of isTop M}.
+
+HB.mixin Record isA1 M of Top M := { }.
+HB.structure Definition A1 := {M of isA1 M & isTop M}.
+
+HB.mixin Record isA2 M of Top M := { }.
+HB.structure Definition A2 := {M of isA2 M & isTop M}.
+
+HB.mixin Record isB1 M of A1 M := { }.
+HB.structure Definition B1 := {M of isB1 M & }.
+
+HB.mixin Record isB2 M of A2 M := { }.
+HB.structure Definition B2 :=  {M of isB2 M & isA2 M }.
+
+HB.structure Definition join := {M of A1 M & A2 M }.
+
+
+HB.structure Definition B2A1 := {M of B2 M & A1 M }.
+HB.structure Definition A2B1 := {M of A2 M & B1 M }.
+
+HB.graph "good_join.dot".
+
+End GoodJoin.
